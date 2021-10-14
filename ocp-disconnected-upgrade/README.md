@@ -16,8 +16,7 @@ Example:
 ```
 ./oc-cluster-update.sh <enter-SHA-digest>
 ```
-
-Run the following commands to verify the update:
+* Run the following commands to verify the update:
 ```
 oc get pods -n openshift-kube-apiserver
 oc get pods -n openshift-etcd

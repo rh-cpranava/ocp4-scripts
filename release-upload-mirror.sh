@@ -5,10 +5,11 @@ PRODUCT_REPO='openshift-release-dev'
 LOCAL_SECRET_JSON=/root/pull.json
 REMOVABLE_MEDIA_PATH=<tmp-folder>
 ARCHITECTURE=x86_64
+RELEASE_NAME="ocp-release" 
 
 echo "Sourcing ImageContentSourcePolicy for this release"
 
-oc adm release mirror -a ${LOCAL_SECRET_JSON} --to-dir=${REMOVABLE_MEDIA_PATH}/mirror quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE} --dry-run
+oc adm -a ${LOCAL_SECRET_JSON} release mirror --from=quay.io/${PRODUCT_REPO}/${RELEASE_NAME}:${OCP_RELEASE}-${ARCHITECTURE} --to=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY} --to-release-image=${LOCAL_REGISTRY}/${LOCAL_REPOSITORY}:${OCP_RELEASE}-${ARCHITECTURE} --run-dry
 
 echo "Downloading oc client for OCP ${OCP_RELEASE}"
 

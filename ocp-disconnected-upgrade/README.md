@@ -12,7 +12,7 @@ Example:
 ```
 ./create-image-signature-config.sh 4.6.3
 ```
-## Verify update
+* Run cluster upgrade with cluster-update script with SHA digest as argument
 ```
 ./oc-cluster-update.sh <enter-SHA-digest>
 ```

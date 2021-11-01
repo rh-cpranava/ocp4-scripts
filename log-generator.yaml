@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: cbuk-5mb-pod
+  labels:
+    app: cbuk-5mb-pod
+  namespace: cbuk-5mb
+spec:
+  containers:
+    - name: cbuk-5mb-pod
+      image: mingrammer/flog
+      commands: ["flog"]
+      args: ["-f","apache_common","-l","-b","5242880"]

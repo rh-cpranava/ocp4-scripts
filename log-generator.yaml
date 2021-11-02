@@ -1,3 +1,14 @@
+#To modify change the mb size to the appropriate value and use the following metrics in bytes to use it
+# 1 MB: 1048576
+# 2 MB: 2097152
+# 3 MB: 3145728
+# 5 MB: 5242880
+# 7 MB: 7340032
+# 8 MB: 8388608
+# 10 MB: 10485760
+#
+# Reference: https://github.com/mingrammer/flog
+
 apiVersion: v1
 kind: Pod
 metadata:

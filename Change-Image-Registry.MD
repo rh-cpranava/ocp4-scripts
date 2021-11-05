@@ -5,15 +5,21 @@
 2. Mirror registry is already setup
 
 ## Add ca cert of the private internal registry to trusted certs
-1. Edit the configmap  belonging to the registry to the list of trusted CA's in OpenShift
+1. Pause the Worker and Master MCPs to increase the pace of customization
+```
+oc patch --type=merge --patch='{"spec":{"paused":true}}' machineconfigpool/master
+oc patch --type=merge --patch='{"spec":{"paused":true}}' machineconfigpool/worker
+```
+
+2. Edit the configmap  belonging to the registry to the list of trusted CA's in OpenShift
 ```
 oc edit configmap registry-cas -n openshift-config 
 <Enter the details of the config map>
 ```
 
-2. Patch the updated registry config map to cluster instance of 
+3. Patch the updated registry config map to cluster instance of 
 ```
-oc patch image.config.openshift.io/cluster --patch '{"spec":{"additionalTrustedCA":{"name":"registry-cas"}}}' --type=merge
+oc patch proxy --patch '{"spec":{"additionalTrustedCA":{"name":"registry-cas"}}}' --type=merge
 ```
 Note: Make sure to modify the registry config map details
 
@@ -36,6 +42,7 @@ oc set data secret/pull-secret -n openshift-config --from-file=.dockerconfigjson
 ## Modify the ImageContentSourcePolicies
 1. Modify the ImageContentSourcePolicies to point to the new mirror registry
 ```
-oc edit imagecontentsourcepolicy
+oc edit imagecontentsourcepolicy image-policy-0
+oc edit imagecontentsourcepolicy image-policy-1
 ```
 

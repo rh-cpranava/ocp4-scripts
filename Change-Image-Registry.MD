@@ -13,11 +13,11 @@ oc patch --type=merge --patch='{"spec":{"paused":true}}' machineconfigpool/worke
 
 2. Edit the configmap  belonging to the registry to the list of trusted CA's in OpenShift
 ```
-oc edit configmap registry-cas -n openshift-config 
+oc edit custom-ca registry-cas -n openshift-config 
 <Enter the details of the config map>
 ```
 
-3. Patch the updated registry config map to cluster instance of 
+3. Patch the updated registry config map to cluster instance of proxy (If already not done):
 ```
 oc patch proxy --patch '{"spec":{"additionalTrustedCA":{"name":"registry-cas"}}}' --type=merge
 ```

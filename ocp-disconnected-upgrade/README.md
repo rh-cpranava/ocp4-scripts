@@ -22,4 +22,5 @@ oc get pods -n openshift-kube-apiserver
 oc get pods -n openshift-etcd
 oc get clusteroperator
 oc get clusterversion
+watch -n10 "oc get clusterversion && echo && oc get co && echo && oc get nodes -o wide"
 ```

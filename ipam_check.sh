@@ -6,7 +6,7 @@
 ##
 ipam_margin_for_alert=20
 echo "------------------------- Host Subnet Value -------------------------"
-pod_cidr=`oc get clusternetwork default -o=jsonpath='{.clusterNetworks[0].CIDR}' | cut -d"." -f1-2`
+
 host_subnet_length=`oc get clusternetwork default -o=jsonpath='{.clusterNetworks[0].hostSubnetLength}'`
 ip_per_node=$((2**host_subnet_length))
 echo $ip_per_node
@@ -22,6 +22,7 @@ for node in `oc get nodes | grep 'worker' | awk '{print $1}'`; do
     echo "Total IPs in /var/lib: $var_lib_ip_count"
     
     # Get Pod IPs from API
+    pod_cidr=`oc get hostsubnet $node -o=jsonpath={.subnet} | cut -d"." -f1-2`
     api_ip_count=`oc get pods -owide -A | grep $pod_cidr | grep $node | wc -l`
     (($api_ip_count)) ||  api_ip_count=0
     echo "Total IPs according to API: $api_ip_count"

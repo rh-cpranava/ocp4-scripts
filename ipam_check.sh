@@ -5,6 +5,15 @@
 ##
 ##
 ipam_margin_for_alert=20
+
+
+function get_octets(){
+    pod_cidr=`oc get clusternetwork default -o=jsonpath='{.clusterNetworks[0].CIDR}'`
+    end=$(ipcalc --ipv4 -b $pod_cidr | cut -d . -f 2)
+    begin=$(ipcalc --ipv4 -n $pod_cidr | cut -d . -f 2)
+    seq -s \| $begin $end
+}
+
 echo "------------------------- Host Subnet Value -------------------------"
 
 host_subnet_length=`oc get clusternetwork default -o=jsonpath='{.clusterNetworks[0].hostSubnetLength}'`
@@ -22,8 +31,7 @@ for node in `oc get nodes | grep 'worker' | awk '{print $1}'`; do
     echo "Total IPs in /var/lib: $var_lib_ip_count"
     
     # Get Pod IPs from API
-    pod_cidr=`oc get hostsubnet $node -o=jsonpath={.subnet} | cut -d"." -f1-2`
-    api_ip_count=`oc get pods -owide -A | grep $pod_cidr | grep $node | wc -l`
+    api_ip_count=`oc get pods -owide -A | egrep $(get_octets) | grep $node | wc -l`
     (($api_ip_count)) ||  api_ip_count=0
     echo "Total IPs according to API: $api_ip_count"
     

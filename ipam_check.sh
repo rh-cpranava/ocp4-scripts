@@ -26,12 +26,12 @@ for node in `oc get nodes | grep 'worker' | awk '{print $1}'`; do
     echo "Node: $node"
     
     # Get IPs from /var/lib/cni/networks/openshift-sdn/
-    var_lib_ip_count=`oc debug -q node/$node -- chroot /host sh -c "ls /var/lib/cni/networks/openshift-sdn/ | wc -l"`
+    var_lib_ip_count=`oc debug -q node/$node -- chroot /host sh -c "ls /var/lib/cni/networks/openshift-sdn/ | grep -v last_reserved_ip | wc -l"`
     (($var_lib_ip_count)) ||  var_lib_ip_count=0
     echo "Total IPs in /var/lib: $var_lib_ip_count"
     
     # Get Pod IPs from API
-    api_ip_count=`oc get pods -owide -A | egrep $(get_octets) | grep $node | wc -l`
+    api_ip_count=`oc get pods -owide -A -o=jsonpath="{range .items[*]}{.metadata.name}{\",\"}{.status.podIP}{\",\"}{.spec.nodeName}{\",\"}{.status.containerStatuses[].ready}{\"\n\"}{end}" | egrep $(get_octets) | grep "${node},true"  | wc -l`
     (($api_ip_count)) ||  api_ip_count=0
     echo "Total IPs according to API: $api_ip_count"
     

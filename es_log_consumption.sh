@@ -1,9 +1,11 @@
 #!/bin/bash
 
 #Calculation retention rate for audit, log and infra
-audit_log_retention_rate=`oc get clusterlogging instance -n openshift-logging -o=jsonpath='{.spec.logStore.retentionPolicy.audit.maxAge}' | sed 's/[^0-9]*//g'`
+audit_log_retention_rate=`oc get clusterlogging -n openshift-logging -o=jsonpath='{.spec.logStore.retentionPolicy.audit.maxAge}' | sed 's/[^0-9]*//g'`
 infra_log_retention_rate=`oc get clusterlogging instance -n openshift-logging -o=jsonpath='{.spec.logStore.retentionPolicy.infra.maxAge}' | sed 's/[^0-9]*//g'`
 app_log_retention_rate=`oc get clusterlogging instance -n openshift-logging -o=jsonpath='{.spec.logStore.retentionPolicy.application.maxAge}' | sed 's/[^0-9]*//g'`
+
+#Get the first running elastic search pod
 es_pod=`oc -n openshift-logging get po -lcomponent=elasticsearch | grep Running | awk '{print $1}' | head -n 1`
 
 #Calculate size for primary.store.size audit, log and infra, indices

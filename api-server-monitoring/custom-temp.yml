@@ -13,7 +13,7 @@ spec:
         message: Pod  {{ $labels.pod }}  in project {{ $labels.namespace }} project stuck at ContainerCreating
         description: >-
           APIRequestCount for Metrics API is high. Kindly update to OpenShift 4.10.21 or higher (https://access.redhat.com/errata/RHBA-2022:5428) or delete the prometheus-adapter pods in openshift-monitoring to fix the error (https://access.redhat.com/solutions/6964075). 
-      expr: sum by (job) (increase(apiserver_request_total{version="v1beta1",group="autoscaling.openshift.io"}[1h])) > 10  
+      expr: apiserver_request_total{version="v1beta1",group="metrics.k8s.io",resource="pods"} > 20000
       for: 1m
       labels:
         severity: critical
@@ -23,7 +23,7 @@ spec:
         message: Pod  {{ $labels.pod }}  in project {{ $labels.namespace }} project stuck at ContainerCreating
         description: >-
           APIRequestCount for Metrics API is high. Kindly update to OpenShift 4.10.21 or higher (https://access.redhat.com/errata/RHBA-2022:5428) or delete the prometheus-adapter pods in openshift-monitoring to fix the error (https://access.redhat.com/solutions/6964075). 
-      expr: sum by (job) (increase(apiserver_request_total{version="v1beta1",group="autoscaling.openshift.io"}[1h])) > 1  
+      expr: apiserver_request_total{version="v1beta1",group="metrics.k8s.io",resource="pods"} > 10000 
       for: 1m
       labels:
         severity: warning

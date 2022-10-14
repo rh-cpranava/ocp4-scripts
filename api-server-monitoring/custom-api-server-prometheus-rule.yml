@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
-  name: api-server-request-count
+  name: monitoring-api-request-count
   namespace: default
 spec:
   groups:
@@ -11,17 +11,19 @@ spec:
       annotations:
         summary: APIRequestCount for Metrics API is Extremely High
         message: Pod  {{ $labels.pod }}  in project {{ $labels.namespace }} project stuck at ContainerCreating
-        description: APIRequestCount for Metrics API is high. Total: {{ $sum(apiserver_request_total{version="v1beta1",group="metrics.k8s.io"}) }} Last 1 hour: sum(apiserver_request_total{version="v1beta1",group="metrics.k8s.io"}). Kindly update to OpenShift 4.10.21 or higher (https://access.redhat.com/errata/RHBA-2022:5428) or delete the prometheus-adapter pods in openshift-monitoring to fix the error (https://access.redhat.com/solutions/6964075). 
-      expr: sum(apiserver_request_total{version="v1beta1",group="metrics.k8s.io"})[1h] > 100000  
-      for: 5m
+        description: >-
+          APIRequestCount for Metrics API is high. Kindly update to OpenShift 4.10.21 or higher (https://access.redhat.com/errata/RHBA-2022:5428) or delete the prometheus-adapter pods in openshift-monitoring to fix the error (https://access.redhat.com/solutions/6964075). 
+      expr: apiserver_request_total{version="v1beta1",group="metrics.k8s.io",resource="pods"} > 20000
+      for: 3m
       labels:
         severity: critical
     - alert: MetricsAPIRequestCountWarning
       annotations:
         summary: APIRequestCount for Metrics API is Increasing
         message: Pod  {{ $labels.pod }}  in project {{ $labels.namespace }} project stuck at ContainerCreating
-        description: APIRequestCount for Metrics API is high. Total: {{ $sum(apiserver_request_total{version="v1beta1",group="metrics.k8s.io"}) }} Last 1 hour: sum(apiserver_request_total{version="v1beta1",group="metrics.k8s.io"}). Kindly update to OpenShift 4.10.21 or higher (https://access.redhat.com/errata/RHBA-2022:5428) or delete the prometheus-adapter pods in openshift-monitoring to fix the error (https://access.redhat.com/solutions/6964075). 
-      expr: sum(apiserver_request_total{version="v1beta1",group="metrics.k8s.io"})[1h] > 50000  
+        description: >-
+          APIRequestCount for Metrics API is high. Kindly update to OpenShift 4.10.21 or higher (https://access.redhat.com/errata/RHBA-2022:5428) or delete the prometheus-adapter pods in openshift-monitoring to fix the error (https://access.redhat.com/solutions/6964075). 
+      expr: apiserver_request_total{version="v1beta1",group="metrics.k8s.io",resource="pods"} > 10000 
       for: 5m
       labels:
         severity: warning

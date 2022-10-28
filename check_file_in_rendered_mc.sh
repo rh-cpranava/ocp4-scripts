@@ -21,4 +21,4 @@ function url_decode(){
 for i in `oc get mc --no-headers | awk '{print $1}' | grep rendered-worker`
 do
  oc get mc $i -o json | jq .spec.config.storage.files | jq ".[] | select(.path==\"$file_to_check\") | .contents.source" | url_decode > $i.conf 
-done 
+done
